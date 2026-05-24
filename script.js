@@ -32,17 +32,21 @@ async function carregarFigurinhas() {
 
 // 💾 SALVAR
 async function salvarFigurinha(figurinha) {
-  const { error } = await client
+
+  const { data, error } = await client
     .from("figurinhas")
-    .insert([figurinha]);
+    .insert([figurinha])
+    .select();
 
- if (error) {
-  console.error("ERRO SUPABASE COMPLETO:", error);
-  alert(error.message);
-  return;
-}
+  if (error) {
+    console.log("ERRO COMPLETO:", error);
+    alert(error.message);
+    return;
+  }
 
-  await carregarFigurinhas();
+  console.log("SALVO COM SUCESSO:", data);
+
+  carregarFigurinhas();
 }
 
 // ➕ ADICIONAR
