@@ -1,8 +1,9 @@
+console.log("JS CARREGOU");
 const SUPABASE_URL = "https://jvksikafenrgtregyscf.supabase.coL";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2a3Npa2FmZW5yZ3RyZWd5c2NmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MzA2NjQsImV4cCI6MjA5NTIwNjY2NH0.MwHuuoPHRZ1qP0vom8cfxD1jwT6T0C7eH6f4mkdHqTw";
 
 // Supabase v2 (forma correta)
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const selecoes = [
   "MEX","RSA","KOR","CZE","CAN","BIH","QAT","SUI","BRA","MAR",
@@ -16,7 +17,7 @@ let figurinhas = [];
 
 // 🔥 CARREGAR DADOS
 async function carregarFigurinhas() {
-  const { data, error } = await supabase
+  const { data, error } = await client
     .from("figurinhas")
     .select("*");
 
@@ -31,7 +32,7 @@ async function carregarFigurinhas() {
 
 // 💾 SALVAR
 async function salvarFigurinha(figurinha) {
-  const { error } = await supabase
+  const { error } = await client
     .from("figurinhas")
     .insert([figurinha]);
 
@@ -69,7 +70,7 @@ async function adicionarFigurinha() {
 
 // ❌ REMOVER
 async function removerFigurinha(id) {
-  const { error } = await supabase
+  const { error } = await client
     .from("figurinhas")
     .delete()
     .eq("id", id);
