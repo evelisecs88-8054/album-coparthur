@@ -36,11 +36,11 @@ async function salvarFigurinha(figurinha) {
     .from("figurinhas")
     .insert([figurinha]);
 
-  if (error) {
-    console.error("Erro ao salvar:", error);
-    alert("Erro ao salvar figurinha!");
-    return;
-  }
+ if (error) {
+  console.error("ERRO SUPABASE COMPLETO:", error);
+  alert(error.message);
+  return;
+}
 
   await carregarFigurinhas();
 }
