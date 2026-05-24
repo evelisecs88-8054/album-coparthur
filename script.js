@@ -9,7 +9,7 @@ const supabase = window.supabase.createClient(
 
 const TOTAL_ALBUM = selecoes.length * 20;
 
-let figurinhas = JSON.parse(localStorage.getItem("figurinhas")) || [];
+let figurinhas = [];
 
 const selecoes = [
   "MEX",
@@ -62,7 +62,38 @@ const selecoes = [
   "PAN"
 ];
 
-function salvarDados() {
+async function salvarFigurinha(figurinha){
+
+  const { error } = await supabase
+    .from("figurinhas")
+    .insert([figurinha]);
+
+  if(error){
+
+    console.error(error);
+    alert("Erro ao salvar!");
+    return;
+  }
+
+  carregarFigurinhas();
+}
+
+async function carregarFigurinhas(){
+
+  const { data, error } = await supabase
+    .from("figurinhas")
+    .select("*");
+
+  if(error){
+
+    console.error(error);
+    return;
+  }
+
+  figurinhas = data;
+
+  atualizarTela();
+}
 
   localStorage.setItem(
     "figurinhas",
@@ -70,7 +101,7 @@ function salvarDados() {
   );
 }
 
-function adicionarFigurinha() {
+async function adicionarFigurinha() {
 
   const selecao =
     document.getElementById("selecao").value;
@@ -101,18 +132,13 @@ function adicionarFigurinha() {
     return;
   }
 
-  figurinhas.push({
-    selecao,
-    numero: Number(numero),
-    status
-  });
+ const novaFigurinha = {
+  selecao,
+  numero: Number(numero),
+  status
+};
 
-  salvarDados();
-
-  document.getElementById("selecao").value = "";
-  document.getElementById("numero").value = "";
-
-  atualizarTela();
+await salvarFigurinha(novaFigurinha);
 }
 
 function removerFigurinha(index){
@@ -121,7 +147,7 @@ function removerFigurinha(index){
 
   salvarDados();
 
-  atualizarTela();
+  carregarFigurinhas();
 }
 
 function atualizarTela(){
