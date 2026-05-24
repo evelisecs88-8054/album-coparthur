@@ -1,15 +1,10 @@
 const SUPABASE_URL = "https://jvksikafenrgtregyscf.supabase.co";
-
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2a3Npa2FmZW5yZ3RyZWd5c2NmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MzA2NjQsImV4cCI6MjA5NTIwNjY2NH0.MwHuuoPHRZ1qP0vom8cfxD1jwT6T0C7eH6f4mkdHqTw";
 
 const supabase = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
-
-const TOTAL_ALBUM = selecoes.length * 20;
-
-let figurinhas = [];
 
 const selecoes = [
   "MEX",
@@ -62,6 +57,10 @@ const selecoes = [
   "PAN"
 ];
 
+const TOTAL_ALBUM = selecoes.length * 20;
+
+let figurinhas = [];
+
 async function salvarFigurinha(figurinha){
 
   const { error } = await supabase
@@ -95,12 +94,6 @@ async function carregarFigurinhas(){
   atualizarTela();
 }
 
-  localStorage.setItem(
-    "figurinhas",
-    JSON.stringify(figurinhas)
-  );
-}
-
 async function adicionarFigurinha() {
 
   const selecao =
@@ -118,7 +111,6 @@ async function adicionarFigurinha() {
     return;
   }
 
-  // impede duplicidade
   const jaExiste = figurinhas.find(
     f =>
       f.selecao === selecao &&
@@ -132,20 +124,30 @@ async function adicionarFigurinha() {
     return;
   }
 
- const novaFigurinha = {
-  selecao,
-  numero: Number(numero),
-  status
-};
+  const novaFigurinha = {
+    selecao,
+    numero: Number(numero),
+    status
+  };
 
-await salvarFigurinha(novaFigurinha);
+  await salvarFigurinha(novaFigurinha);
+
+  document.getElementById("selecao").value = "";
+  document.getElementById("numero").value = "";
 }
 
-function removerFigurinha(index){
+async function removerFigurinha(id){
 
-  figurinhas.splice(index, 1);
+  const { error } = await supabase
+    .from("figurinhas")
+    .delete()
+    .eq("id", id);
 
-  salvarDados();
+  if(error){
+
+    console.error(error);
+    return;
+  }
 
   carregarFigurinhas();
 }
@@ -172,13 +174,13 @@ function atualizarTela(){
     figurinhas.filter(f => f.status === "repetida");
 
   // COLADAS
-  coladas.forEach((fig, index) => {
+  coladas.forEach((fig) => {
 
     const li = document.createElement("li");
 
     li.innerHTML = `
       ${fig.selecao} - ${fig.numero}
-      <button onclick="removerFigurinha(${index})">
+      <button onclick="removerFigurinha(${fig.id})">
         ❌
       </button>
     `;
@@ -187,13 +189,13 @@ function atualizarTela(){
   });
 
   // REPETIDAS
-  repetidas.forEach((fig, index) => {
+  repetidas.forEach((fig) => {
 
     const li = document.createElement("li");
 
     li.innerHTML = `
       ${fig.selecao} - ${fig.numero}
-      <button onclick="removerFigurinha(${index})">
+      <button onclick="removerFigurinha(${fig.id})">
         ❌
       </button>
     `;
@@ -235,4 +237,4 @@ function atualizarTela(){
     listaFaltando.children.length;
 }
 
-atualizarTela();
+carregarFigurinhas();
