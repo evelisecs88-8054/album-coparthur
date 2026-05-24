@@ -2,7 +2,6 @@ console.log("JS CARREGOU");
 const SUPABASE_URL = "https://jvksikafenrgtregyscf.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2a3Npa2FmZW5yZ3RyZWd5c2NmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MzA2NjQsImV4cCI6MjA5NTIwNjY2NH0.MwHuuoPHRZ1qP0vom8cfxD1jwT6T0C7eH6f4mkdHqTw";
 
-// Supabase v2 (forma correta)
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const selecoes = [
